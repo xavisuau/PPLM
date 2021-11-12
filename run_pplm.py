@@ -22,6 +22,7 @@ Example command with discriminator:
 python examples/run_pplm.py -D sentiment --class_label 3 --cond_text "The lake" --length 10 --gamma 1.0 --num_iterations 30 --num_samples 10 --stepsize 0.01 --kl_scale 0.01 --gm_scale 0.95
 """
 
+from time import time
 import argparse
 import json
 from operator import add
@@ -781,6 +782,7 @@ def run_pplm_example(
 
     # full_text_generation returns:
     # unpert_gen_tok_text, pert_gen_tok_texts, discrim_losses, losses_in_time
+    tic = time()
     unpert_gen_tok_text, pert_gen_tok_texts, _, _ = full_text_generation(
         model=model,
         tokenizer=tokenizer,
@@ -805,6 +807,8 @@ def run_pplm_example(
         kl_scale=kl_scale,
         verbosity_level=verbosity_level
     )
+    toc = time()
+    print(f'Time: {toc-tic:0.3f}s')
 
     # untokenize unperturbed text
     unpert_gen_text = tokenizer.decode(unpert_gen_tok_text.tolist()[0])
