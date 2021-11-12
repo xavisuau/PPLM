@@ -35,7 +35,7 @@ from torch.autograd import Variable
 from tqdm import trange
 from transformers import GPT2Tokenizer
 from transformers.file_utils import cached_path
-from transformers import GPT2LMHeadModel
+from transformers.modeling_gpt2 import GPT2LMHeadModel
 
 from pplm_classification_head import ClassificationHead
 
@@ -201,7 +201,7 @@ def perturb_past(
         # Compute hidden using perturbed past
         perturbed_past = list(map(add, past, curr_perturbation))
         _, _, _, curr_length, _ = curr_perturbation[0].shape
-        all_logits, _, all_hidden = model(last, past_key_values=perturbed_past)
+        all_logits, _, all_hidden = model(last, past=perturbed_past)
         hidden = all_hidden[-1]
         new_accumulated_hidden = accumulated_hidden + torch.sum(
             hidden,
@@ -615,7 +615,7 @@ def generate_text_pplm(
             else:
                 pert_past = past
 
-        pert_logits, past, pert_all_hidden = model(last, past_key_values=pert_past)
+        pert_logits, past, pert_all_hidden = model(last, past=pert_past)
         pert_logits = pert_logits[:, -1, :] / temperature  # + SMALL_CONST
         pert_probs = F.softmax(pert_logits, dim=-1)
 
