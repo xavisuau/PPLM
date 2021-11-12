@@ -949,7 +949,7 @@ if __name__ == '__main__':
     parser.add_argument("--verbosity", type=str, default="very_verbose",
                         choices=(
                             "quiet", "regular", "verbose", "very_verbose"),
-                        help="verbosiry level")
+                        help="verbosity level")
 
     args = parser.parse_args()
     results = []
